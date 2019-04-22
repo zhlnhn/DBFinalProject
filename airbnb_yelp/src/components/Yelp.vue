@@ -15,7 +15,7 @@
     <b-form-input id="range-1" v-model="min_price" type="range" min="0" max="4"></b-form-input>
   </div>
       <div :style="{ width:'150px'}">
-      <label for="range-2">Min Price {{ max_price }}</label>
+      <label for="range-2">Max Price {{ max_price }}</label>
       <b-form-input id="range-2" v-model="max_price" type="range" min="0" max="4"></b-form-input>
     </div>
         <div :style="{ width:'150px'}">
