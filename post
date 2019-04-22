@@ -1,0 +1,3 @@
+curl -X POST http://localhost:8080/allRestaurant -d \
+  '{"category": "hotdog", "min_price": "0", "max_price": "4", "min_rating":"1","max_rating":"5"}' \
+  -H 'Content-Type: application/json'
