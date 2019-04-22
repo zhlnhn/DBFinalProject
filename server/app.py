@@ -70,10 +70,17 @@ def allAirbnb():
         min_rating=post_data.get('min_rating')
         max_rating=post_data.get('max_rating')
         max_dist=post_data.get('distance')
-        print("SELECT a.name,b.category,a.price,a.avg_rating,c.address FROM Restaurant as a, Restaurant_category as b, Restaurant_location as c WHERE a.id=b.id AND a.id=c.id a.price>=%s AND a.price<=%s AND b.category LIKE '%s' AND a.avg_rating>=%s AND a.avg_rating<=%s"%(min_price,max_price,cat,min_rating,max_rating))
+        print("SELECT a.rid,a.name,b.category,a.price,a.avg_rating,c.address,c.latitude, c.longitude FROM Restaurant as a, Restaurant_category as b, Restaurant_location as c WHERE a.rid=b.rid AND a.rid=c.rid AND a.price>=%s AND a.price<=%s AND b.category LIKE '%s' AND a.avg_rating>=%s AND a.avg_rating<=%s"%(min_price,max_price,cat,min_rating,max_rating))
         cursor=conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cursor.execute("SELECT a.rid,a.name,b.category,a.price,a.avg_rating,c.address,c.latitude, c.longitude FROM Restaurant as a, Restaurant_category as b, Restaurant_location as c WHERE a.rid=b.rid AND a.rid=c.rid AND a.price>=%s AND a.price<=%s AND b.category LIKE '%s' AND a.avg_rating>=%s AND a.avg_rating<=%s"%(min_price,max_price,cat,min_rating,max_rating))
         rest_records = cursor.fetchall()
+        print(len(rest_records))
+        if len(rest_records)==0:
+            return jsonify({
+                'status': 'fail',
+                'lodgings': [],
+                'markers': []
+            })
         res=[]
         mks=[]
         visited_l=set()
@@ -135,18 +142,21 @@ def ping():
         max_price=post_data.get('max_price')
         min_rating=post_data.get('min_rating')
         max_rating=post_data.get('max_rating')
-        print("SELECT a.name,b.category,a.price,a.avg_rating,c.address FROM Restaurant as a, Restaurant_category as b, Restaurant_location as c WHERE a.id=b.id AND a.id=c.id a.price>=%s AND a.price<=%s AND b.category LIKE '%s' AND a.avg_rating>=%s AND a.avg_rating<=%s"%(min_price,max_price,cat,min_rating,max_rating))
         cursor=conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cursor.execute("SELECT a.name,b.category,a.price,a.avg_rating,c.address,c.latitude, c.longitude FROM Restaurant as a, Restaurant_category as b, Restaurant_location as c WHERE a.rid=b.rid AND a.rid=c.rid AND a.price>=%s AND a.price<=%s AND b.category LIKE '%s' AND a.avg_rating>=%s AND a.avg_rating<=%s"%(min_price,max_price,cat,min_rating,max_rating))
         records = cursor.fetchall()
+        if len(records)==0:
+            return jsonify({
+                'status': 'fail',
+                'restaurants': [],
+                'markers': []
+            })
         res=[]
         mks=[]
         for record in records:
             tmp=wrap_yelp(record)
             res.append(tmp[0])
             mks.append(tmp[1])
-
-        print("SELECT a.name,b.category,a.price,a.avg_rating,c.address FROM Restaurant as a, Restaurant_category as b, Restaurant_location as c WHERE a.price>=%s AND a.price<=%s AND b.category LIKE %s AND a.avg_rating>=%s AND a.avg_rating<=%s",[min_price,max_price,cat,min_rating,max_rating])
         return jsonify({
             'status': 'success',
             'restaurants': res,

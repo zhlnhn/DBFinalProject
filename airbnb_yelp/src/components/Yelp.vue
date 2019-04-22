@@ -2,7 +2,7 @@
   <div class="container">
     <div>
   <b-navbar toggleable="lg" type="dark" variant="info">
-    <b-navbar-brand href="#">Database Final Project</b-navbar-brand>
+    <b-navbar-brand href="http://localhost:8081/airbnb">Database Final Project</b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -28,7 +28,7 @@
         <h1>Lodging</h1>
         <hr><br><br>
         <h2>Select your restaurant preference</h2>
-<div>
+<div :style="{ width:'200px'}">
   <div class="mt-2">Enter Category: {{ rest_cate }}</div>
     <b-form-input v-model="rest_cate" placeholder="Enter Category"></b-form-input>
 
@@ -55,8 +55,8 @@
       </div>
 
         <button v-on:click="onSearch" class="btn btn-success btn-sm">Search</button>
+        <h3>{{this.errormessage}}</h3>
         <br><br>
-        <h1>{{markers[0].latitude}}</h1>
         <div>
     <br/>
 
@@ -111,6 +111,7 @@ export default {
       max_rating: 5,
       markers: [],
       distance: 0.5,
+      errormessage: '',
     };
   },
   methods: {
@@ -153,8 +154,17 @@ export default {
       };
       axios.post(path,payload)
         .then((res) => {
-          this.lodgings = res.data.lodgings;
-          this.markers=res.data.markers;
+          if(res.data.status=='success'){
+            console.log('success')
+            this.lodgings = res.data.lodgings;
+            this.markers=res.data.markers;
+            this.errormessage=''
+          }
+          else{
+            console.log('fail')
+            this.getLodgings();
+            this.errormessage='No result found!'
+          }
         })
         .catch((error) => {
           // eslint-disable-next-line

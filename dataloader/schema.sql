@@ -1,7 +1,7 @@
--- Database Project Schema Design: 
+-- Database Project Schema Design:
 -- Diya Li, Zhilin Han, Xi Chen, Qianjun Chen
 
--- we design a Restaurant schema from the yelp restaurant dataset which contains 9k+ records and select 9 
+-- we design a Restaurant schema from the yelp restaurant dataset which contains 9k+ records and select 9
 -- relevant attributes from 17 attributes.
 -- to avoid data redundancy, we remove records without latitude or longitude or average rating score.
 
@@ -31,7 +31,7 @@ CREATE TABLE Restaurant_category (
 );
 
 
--- we design a hotel lodge schema from the Airbnb Open Data in NYC dataset which contains 44.3k 
+-- we design a hotel lodge schema from the Airbnb Open Data in NYC dataset which contains 44.3k
 -- records and select 16 relevant attributes from the given 96 attributes.
 -- to avoid data redundancy, we remove records without latitude and longitude.
 
@@ -58,3 +58,11 @@ CREATE TABLE Lodging_location (
     longitude DECIMAL NOT NULL,
     Primary Key (lid)
 );
+
+CREATE TABLE Nearby_pairs (
+      lid INT,
+      rid INT,
+      distance DECIMAL(10,2),
+      CONSTRAINT distance_range CHECK (distance BETWEEN 0 AND 3),
+      Primary Key(lid,rid)
+  )；
