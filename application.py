@@ -242,13 +242,15 @@ def command_exe():
             query=input("Query Airbnbs based on restaurant preference (<Category> <min_price> <max_price> <min_rating> <max_rating> <distance>)\n (Example: \"hotdog\" 2 3 3 5 1)\n")
             query_lodgings_by_food(query)
 
+def start_server():
+    app.run(debug=True, port=8080)
+
 
 if __name__ == '__main__':
     if len(sys.argv)>1:
         if sys.argv[1]=='server':
-            app.run(debug=True, port=8080)
-        elif sys.argv[1]=='both':
-            app.run(debug=True, port=8080)
-            command_exe()
+            start_server()
+        else:
+            print("invalid argument!")
     else:
         command_exe()
