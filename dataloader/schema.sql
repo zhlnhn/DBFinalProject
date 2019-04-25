@@ -13,6 +13,7 @@ CREATE TABLE Restaurant (
     review_count INT,
     avg_rating DECIMAL NOT NULL,
     CONSTRAINT rating_range CHECK (avg_rating BETWEEN 1 AND 5),
+    url VARCHAR(1000),
     Primary Key (rid)
 );
 
@@ -48,6 +49,7 @@ CREATE TABLE Lodging (
     number_of_reviews INT,
     review_scores_rating DECIMAL DEFAULT NULL,
     review_scores_location DECIMAL DEFAULT NULL,
+    url VARCHAR(1000),
     Primary Key (lid)
     );
 

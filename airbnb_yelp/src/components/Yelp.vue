@@ -81,7 +81,7 @@
           </thead>
           <tbody>
             <tr v-for="(lodging, index) in lodgings" :key="index">
-              <td>{{ lodging.name }}</td>
+              <td><a :href="lodging.url">{{ lodging.name }}</a></td>
               <td>{{ lodging.prop_type }}</td>
               <td>{{ lodging.price }}</td>
               <td>{{ lodging.accommodates}}</td>

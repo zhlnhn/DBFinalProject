@@ -1,24 +1,15 @@
 from flask import Flask,jsonify,request
-from models import db
 import psycopg2
 import psycopg2.extras
 from flask_cors import CORS
 import json
+import sys
+from texttable import Texttable
 app = Flask(__name__)
 CORS(app)
-POSTGRES = {
-    'user': 'restaurant_hotel',
-    'pw': '',
-    'db': 'restaurant_hotel',
-    'host': 'localhost',
-    'port': '5432',
-}
 connection_string = "host='localhost' dbname='restaurant_hotel' user='hanzhilin' password=''"
 conn = psycopg2.connect(connection_string)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\
-%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
-db.init_app(app)
 
 def wrap_yelp(tup):
     res={}
@@ -165,7 +156,99 @@ def allRestaurant():
             'markers': mks
         })
 
+def query_restaurants(qry):
+    tmp=qry.split('\"')
+    cat='%'+tmp[1].lower()+'%'
+    rest=tmp[2][1:].split(" ")
+    rest=[int(x) for x in rest]
+    cursor=conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute("SELECT a.name,b.category,a.price,a.avg_rating,c.address FROM Restaurant as a, Restaurant_category as b, Restaurant_location as c WHERE a.rid=b.rid AND a.rid=c.rid AND a.price>=%s AND a.price<=%s AND b.category LIKE '%s' AND a.avg_rating>=%s AND a.avg_rating<=%s"%(rest[0],rest[1],cat,rest[2],rest[3]))
+    records = cursor.fetchall()
+    if len(records)==0:
+        print("No result found")
+        return
+    t = Texttable()
+    t.add_rows([['Name', 'Category','Price','Rating','Address']]+records)
+    print(t.draw())
+    return records
+
+def query_lodgings(qry):
+    tmp=qry.split('\"')
+    nbh='%'+tmp[1].lower()+'%'
+    rest=tmp[2][1:].split(" ")
+    rest=[int(x) for x in rest]
+    cursor=conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute("SELECT a.name,a.property_type,a.price,a.accommodates,a.review_scores_rating,b.neighbourhood FROM lodging as a, lodging_location as b WHERE a.lid=b.lid AND a.price>=%s AND a.price<=%s AND b.neighbourhood LIKE '%s' AND a.review_scores_rating>=%s AND a.review_scores_rating<=%s"%(rest[0],rest[1],nbh,rest[2],rest[3]))
+    records = cursor.fetchall()
+    if len(records)==0:
+        print("No result found")
+        return
+    t = Texttable()
+    t.add_rows([['Name', 'Property Type','Price','Accommodates','Rating','Neighbourhood']]+records)
+    print(t.draw())
+    return
+
+def query_lodgings_by_food(qry):
+    tmp=qry.split('\"')
+    cat='%'+tmp[1].lower()+'%'
+    rest=tmp[2][1:].split(" ")
+    rest=[float(x) for x in rest]
+    max_dist=rest[4]
+    cursor=conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute("SELECT a.rid,a.name,b.category,a.price,a.avg_rating,c.address,c.latitude, c.longitude FROM Restaurant as a, Restaurant_category as b, Restaurant_location as c WHERE a.rid=b.rid AND a.rid=c.rid AND a.price>=%s AND a.price<=%s AND b.category LIKE '%s' AND a.avg_rating>=%s AND a.avg_rating<=%s"%(rest[0],rest[1],cat,rest[2],rest[3]))
+    rest_records = cursor.fetchall()
+    print(len(rest_records))
+    if len(rest_records)==0:
+        print("No result found")
+        return
+    res=[]
+    visited_l=set()
+    visited_r=set()
+    for rest in rest_records:
+        rid=rest[0]
+        cursor.execute("SELECT a.name,a.property_type,a.price,a.accommodates,a.review_scores_rating,b.neighbourhood,c.rid,a.lid FROM Lodging as a, Lodging_location as b,Nearby_pairs as c WHERE a.lid=b.lid AND a.lid=c.lid AND c.rid=%s AND c.distance<%s"%(rid,max_dist))
+        records=cursor.fetchall()
+        for record in records:
+            if record[-1] in visited_l or record[-2] in visited_r:
+                continue
+            visited_l.add(record[-1])
+            visited_r.add(record[-2])
+            res.append(record[:-2])
+    t = Texttable()
+    t.add_rows([['Name', 'Property Type','Price','Accommodates','Rating','Neighbourhood']]+res)
+    print(t.draw())
+    return
+
+def command_exe():
+    state=''
+    while state!='9':
+        state=input("""Please Enter:
+1) help
+2) Query Restaurants (<Category> <min_price> <max_price> <min_rating> <max_rating>)
+3) Query Airbnbs (<Neighbourhood> <min_price> <max_price> <min_rating> <max_rating>)
+4) Query Airbnbs based on restaurant preference  (<Category> <min_price> <max_price> <min_rating> <max_rating> <distance>)
+9) Exit
+""")
+        print("user input is",state)
+        if state=='1':
+            continue
+        elif state=='2':
+            query=input("Query Restaurants (Example:\"hotdog\" 2 3 3 5)\n")
+            query_restaurants(query)
+        elif state=='3':
+            query=input("Query Airbnbs (Example: \"Midtown\" 200 300 90 100)\n")
+            query_lodgings(query)
+        elif state=='4':
+            query=input("Query Airbnbs based on restaurant preference (<Category> <min_price> <max_price> <min_rating> <max_rating> <distance>)\n (Example: \"hotdog\" 2 3 3 5 1)\n")
+            query_lodgings_by_food(query)
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    if len(sys.argv)>1:
+        if sys.argv[1]=='server':
+            app.run(debug=True, port=8080)
+        elif sys.argv[1]=='both':
+            app.run(debug=True, port=8080)
+            command_exe()
+    else:
+        command_exe()

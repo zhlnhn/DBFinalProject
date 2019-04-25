@@ -35,6 +35,7 @@ cur.execute("""
         review_count INT,
         avg_rating DECIMAL NOT NULL,
         CONSTRAINT rating_range CHECK (avg_rating BETWEEN 1 AND 5),
+        url VARCHAR(1000),
         Primary Key (rid)
         );
     CREATE TABLE Restaurant_location(
@@ -64,6 +65,7 @@ cur.execute("""
         number_of_reviews INT,
         review_scores_rating DECIMAL DEFAULT NULL,
         review_scores_location DECIMAL DEFAULT NULL,
+        url VARCHAR(1000),
         Primary Key (lid)
     );
 
@@ -107,11 +109,11 @@ for row in reader:
         price = 0
     else:
         price = row[8]
-    insertRow1 = [int(row[0]), row[2], row[4], price, row[7], row[9]]
+    insertRow1 = [int(row[0]), row[2], row[4], price, row[7], row[9],row[3]]
     insertRow2 = [int(row[0]), row[12], row[5], row[6]]
     yelp_loc[int(row[0])]=(row[5], row[6])
     cur.execute(
-                "INSERT INTO Restaurant VALUES (%s, %s, %s, %s, %s, %s)", insertRow1
+                "INSERT INTO Restaurant VALUES (%s, %s, %s, %s, %s, %s, %s)", insertRow1
     )
     cur.execute(
                 "INSERT INTO  Restaurant_location VALUES  (%s, %s, %s, %s)", insertRow2
@@ -166,10 +168,10 @@ for row in reader:
     if len(row[13]) > 0:
         review_scores_location = row[13]
 
-    insertRow1 = [int(row[0]), row[1], row[3], price, week_price, row[7], row[8], mon_price, row[10], row[11], review_scores_rating, review_scores_location]
+    insertRow1 = [int(row[0]), row[1], row[3], price, week_price, row[7], row[8], mon_price, row[10], row[11], review_scores_rating, review_scores_location,row[2]]
     # print(insertRow1)
     cur.execute(
-        "INSERT INTO Lodging VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", insertRow1
+        "INSERT INTO Lodging VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", insertRow1
     )
     ii += 1
     if ii > 5000:

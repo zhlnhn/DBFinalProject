@@ -78,7 +78,7 @@
           </thead>
           <tbody>
             <tr v-for="(restaurant, index) in restaurants" :key="index">
-              <td>{{ restaurant.name }}</td>
+              <td ><a :href="restaurant.url">{{ restaurant.name }}</a></td>
               <td>{{ restaurant.category }}</td>
               <td>{{ restaurant.price }}</td>
               <td>{{ restaurant.rating }}</td>
