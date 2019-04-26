@@ -11,9 +11,9 @@ https://github.com/zhlnhn/DBFinalProject
 ● Fetched dataset from: http://odds.cs.stonybrook.edu/yelpnyc-dataset/
 
 #Our csv:
-yelp: https://drive.google.com/uc?export=download&id=1aMbNGpvAesBZZ43EBUcmu3HDfn8uQqoe
-airbnb: https://drive.google.com/uc?export=download&id=1m7OQqGFD5GI-rvlT_talJany4-_GTKcn
-airbnb address: https://drive.google.com/uc?export=download&id=1U0dC36tkSEAzX7PArwJpSdvslge03XpD
+[yelp](https://drive.google.com/uc?export=download&id=1aMbNGpvAesBZZ43EBUcmu3HDfn8uQqoe)
+[airbnb](https://drive.google.com/uc?export=download&id=1m7OQqGFD5GI-rvlT_talJany4-_GTKcn)
+[airbnb address](https://drive.google.com/uc?export=download&id=1U0dC36tkSEAzX7PArwJpSdvslge03XpD)
 
 #Setup:
 - install packages
@@ -47,4 +47,4 @@ Then, open another terminal enter this folder
 cd airbnb_yelp
 npm run dev
 ```
-open [localhost:8081/](localhost:8081/) in browser
+open [localhost:8081](localhost:8081/airbnb) in browser
