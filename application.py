@@ -4,12 +4,10 @@ import psycopg2.extras
 from flask_cors import CORS
 import json
 import sys
-from database import query_lodgings_by_food,query_lodgings,query_restaurants
-from database import server_all_restaurant,server_restaurant
 from database import *
 app = Flask(__name__)
 CORS(app)
-connection_string = "host='localhost' dbname='restaurant_hotel' user='restaurant_hotel' password=''"
+connection_string = "host='localhost' dbname='restaurant_hotel' user='restaurant_hotel_user' password=''"
 conn = psycopg2.connect(connection_string)
 app.config['DEBUG'] = True
 
