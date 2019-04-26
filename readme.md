@@ -23,6 +23,7 @@ pip3 install -r requirements.txt
 ```
 - load data
 ```sh
+psql <dataloader/setup.sql
 python3 dataloader/load_data.py
 ```
 
