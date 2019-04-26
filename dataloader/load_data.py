@@ -14,7 +14,7 @@ files = open('dataset.txt', 'r').readlines()
 
 ## build connection
 
-conn = psycopg2.connect("host=localhost dbname=restaurant_hotel user=hanzhilin")
+conn = psycopg2.connect("host=localhost dbname=restaurant_hotel user=restaurant_hotel_user")
 cur = conn.cursor()
 cur.execute("""
     DROP SCHEMA IF EXISTS eat_sleep CASCADE;
