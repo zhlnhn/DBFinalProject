@@ -1,5 +1,5 @@
 # Note
-We have changed our dataset selections for the reason that there were 2 empty columns (latitude, longitude) in NYC parking tickets dataset. If you may, please regrade our schema part. Thanks!
+We have changed our dataset selections for the reason that there were 2 empty columns (latitude, longitude) in NYC parking tickets dataset. Please regrade our schema part. Thanks!
 
 # Github link
 https://github.com/zhlnhn/DBFinalProject
