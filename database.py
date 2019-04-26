@@ -1,7 +1,7 @@
 import psycopg2
 import psycopg2.extras
 from texttable import Texttable
-connection_string = "host='localhost' dbname='restaurant_hotel' user='hanzhilin' password=''"
+connection_string = "host='localhost' dbname='restaurant_hotel' user='restaurant_hotel_user' password=''"
 conn = psycopg2.connect(connection_string)
 def query_lodgings_by_food(qry):
     tmp=qry.split('\"')
