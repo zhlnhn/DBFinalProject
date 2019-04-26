@@ -38,11 +38,11 @@ You have to have npm installed and run
 cd airbnb_yelp
 npm install
 ```
-Then, get back to DBFinalProject folder
+Then, get back to DBFinalProject folder to run backend server
 ```sh
 python application.py server
 ```
-Then, open another terminal enter this folder
+Then, open **another terminal**(don't close the first one) enter this folder to run frontend
 ```sh
 cd airbnb_yelp
 npm run dev
